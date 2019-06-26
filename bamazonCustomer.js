@@ -11,7 +11,7 @@ var con = mysql.createConnection({
   
   con.connect(function(err) {
     if (err) throw err;
-    console.log("Connected to MySQL!");
+    // console.log("Connected to MySQL!");
   });
 
 function displayProducts(){
@@ -20,7 +20,7 @@ function displayProducts(){
             if (err) throw err;
             productData = itemList;
             console.table(itemList, ["item_id" ,"product_name", "stock_quantity", "price"]);
-            // purchasePrompt();
+            promptUser();
         });
 }
 
@@ -44,13 +44,15 @@ function purchaseProduct(id, qty){
                         [updated_qty, element.item_id],
                         (err, queryRes) => {
                             if (err) throw err;
-                            console.log("Thank you for your purchase, the total was: " + total_amount);
+                            console.log("Thank you for your purchase, the total was: $" + total_amount);
+                            con.end();
                         });
 
 
 
                     }else {
                         console.log("Sorry, not enough quantity left");
+                        con.end();
                     }
                 }
                 
@@ -58,9 +60,8 @@ function purchaseProduct(id, qty){
             });
             if(!found) {
                 console.log("item not found");
+                con.end();
              }
-            // console.table(itemList, ["id" ,"product_name", "price"]);
-            // purchasePrompt();
         });
 }
 
@@ -68,7 +69,7 @@ function promptUser(){
     inq.prompt([
         {
             type: "input",
-            message: "Please enter the id of the product you would like to buy",
+            message: "Please enter the item_id of the product you would like to buy",
             name: "product_id"
         },
         {
@@ -86,4 +87,3 @@ function promptUser(){
 }
 
 displayProducts();
-promptUser();
